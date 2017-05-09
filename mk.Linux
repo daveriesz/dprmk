@@ -19,7 +19,7 @@ DASH64 = -m64
 dasho  = -o $(1)
 dashi  = -I$(1)
 
-CPFMDEFS  = -DLINUX
+CPFMDEFS  = -DLINUX $(CPFMDEFS_local)
 LDPFMLIBS = 
 LDPFMDIRS = 
 LDPFMOPTS = 

@@ -12,10 +12,15 @@ UNAMES    := $(shell uname -s)
 UNAMEN    := $(shell uname -n)
 PFM       := $(patsubst CYGWIN%,Windows,$(UNAMES))
 
-COPT       = $(DASHG)
-CXXOPT     = $(DASHG)
+CFLAGS   = $(CDEFINES) $(CINCLUDE) $(COPT) $(CFLGAS_local)
+CDEFINES = $(CPFMDEFS) $(CDEFINES_local)
+CINCLUDE = $(CINCLUDE_local)
+COPT     = $(DASHG) $(COPT_local)
+COBJECTS = $(CSOURCES:%.c=$(BLD)/%.o)
 
-BLD        = $(PFM)_$(ARCH)
+CXXOPT   = $(DASHG) $(CXXOPT_local)
+
+BLD      = $(PFM)_$(ARCH)
 
 include $(MKCOMMON)/mk.$(PFM)
 
