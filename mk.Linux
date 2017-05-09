@@ -19,11 +19,11 @@ DASH64 = -m64
 dasho  = -o $(1)
 dashi  = -I$(1)
 
-CPFMDEFS  = -DLINUX $(CPFMDEFS_local)
-LDPFMLIBS = 
-LDPFMDIRS = 
-LDPFMOPTS = 
-LDPFMCXXLIBS = -lstdc++
+CPFMDEFS   = -DLINUX $(CPFMDEFS_local)
+CXXPFMDEFS = -DLINUX $(CXXPFMDEFS_local)
+LDPFMLIBS  = 
+LDPFMDIRS  = 
+LDPFMOPTS  = 
 
 COMPILERSTRING := $(shell $(CC) $(DASHARCH) -dM -E - </dev/null | egrep "^\#define __(x86_64|i[3456]86) +1$$" | head -1 | sed "s/^.*x86_64.*$$/x64/;;s/^.*i[3456]86.*$$/x32/")
 ARCH           := $(COMPILERSTRING)
@@ -38,6 +38,9 @@ incldir = -I$(1)
 
 mkarchive = ar rcs -o $(call archive,$(1))
 mkexe = $(CC) -o $(1) $(2) $(3)
+mkcexe   = echo " > LINK $(1)" && $(CC)  -o $(1) $(2) $(CLDFLAGS)
+mkcxxexe = $(CXX) -o $(1) $(2) $(CXXLDFLAGS)
+mkar     = $(RM) $(1) && ar rcs $(1) $(2)
 
 MATHLIB   = -lm
 CLOCKLIB  = -lrt
@@ -52,3 +55,6 @@ QTCORE    = QtCore
 QTGUI     = QtGui
 
 DEPFILE   = .depend
+
+rmdir     = if [ -d $(1) ] ; then rmdir $(1) ; fi
+

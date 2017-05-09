@@ -1,26 +1,39 @@
 
-MKCOMMON  := $(dir $(realpath $(CURDIR)/$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))))
+MKCOMMON    := $(dir $(realpath $(CURDIR)/$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))))
 
-UTCOMMONx := $(realpath $(MKCOMMON)/..)
-UTCOMMON  := $(shell echo $(UTCOMMONx) | sed "s,/cygdrive/\([^/]*\),\1:,g")
+UTCOMMONx   := $(realpath $(MKCOMMON)/..)
+UTCOMMON    := $(shell echo $(UTCOMMONx) | sed "s,/cygdrive/\([^/]*\),\1:,g")
 
-LICDEVx   := $(realpath $(UTCOMMON)/../..)
-LICDEV    := $(shell echo $(LICDEVx)   | sed "s,/cygdrive/\([^/]*\),\1:,g")
+LICDEVx     := $(realpath $(UTCOMMON)/../..)
+LICDEV      := $(shell echo $(LICDEVx)   | sed "s,/cygdrive/\([^/]*\),\1:,g")
 
+UNAMES      := $(shell uname -s)
+UNAMEN      := $(shell uname -n)
+PFM         := $(patsubst CYGWIN%,Windows,$(UNAMES))
 
-UNAMES    := $(shell uname -s)
-UNAMEN    := $(shell uname -n)
-PFM       := $(patsubst CYGWIN%,Windows,$(UNAMES))
+CFLAGS       = $(CDEFINES) $(CINCLUDE) $(COPT) $(CFLGAS_local)
+CDEFINES     = $(CPFMDEFS) $(CDEFINES_local)
+CINCLUDE     = $(CINCLUDE_local)
+COPT         = $(COPT_local)
+COBJECTS     = $(CSOURCES:%.c=$(BLD)/%.o)
+CLDFLAGS     = $(CLDOPTS) $(CLDLIBDIRS) $(CLDLIBLIBS) $(CLDFLAGS_local)
+CLDOPTS      = $(CLDOPTS_local)
+CLDLIBDIRS   = $(CLDLIBDIRS_local)
+CLDLIBLIBS   = $(CLDLIBLIBS_local)
 
-CFLAGS   = $(CDEFINES) $(CINCLUDE) $(COPT) $(CFLGAS_local)
-CDEFINES = $(CPFMDEFS) $(CDEFINES_local)
-CINCLUDE = $(CINCLUDE_local)
-COPT     = $(DASHG) $(COPT_local)
-COBJECTS = $(CSOURCES:%.c=$(BLD)/%.o)
+CXXFLAGS     = $(CXXDEFINES) $(CXXINCLUDE) $(CXXOPT) $(CXXFLGAS_local)
+CXXDEFINES   = $(CXXPFMDEFS) $(CXXDEFINES_local)
+CXXINCLUDE   = $(CXXINCLUDE_local)
+CXXOPT       = $(CXXOPT_local)
+CXXOBJECTS   = $(CXXSOURCES:%.c=$(BLD)/%.o)
+CXXLDFLAGS   = $(CXXLDOPTS) $(CXXLDLIBDIRS) $(CXXLDLIBLIBS) $(CXXLDFLAGS_local)
+CXXLDOPTS    = $(CXXLDOPTS_local)
+CXXLDLIBDIRS = $(CXXLDLIBDIRS_local)
+CXXLDLIBLIBS = $(CXXLDLIBLIBS_local)
 
-CXXOPT   = $(DASHG) $(CXXOPT_local)
+MKNPD        = $(MAKE) --no-print-directory
 
-BLD      = $(PFM)_$(ARCH)
+BLD          = $(PFM)_$(ARCH)
 
 include $(MKCOMMON)/mk.$(PFM)
 

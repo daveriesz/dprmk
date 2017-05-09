@@ -1,34 +1,37 @@
 
-$(BLD):
-	@mkdir -p "$(BLD)"
-
 $(BLD)/%$(OBJSFX): %.c
-	@$(MAKE) $(BLD)
 	@echo " + CC $<"
-	@$(CC) $(DASHC) $(COPT) $< $(call dasho,$@) $(CFLAGS)
+	@mkdir -p "$(BLD)"
+	@$(CC) $(DASHC) $< $(call dasho,$@) $(CFLAGS)
 
 $(BLD)/%$(OBJSFX): %.cpp
 	@echo " + CXX $<"
-	@$(CXX) $(DASHC) $(CXXOPT) $< $(call dasho,$@) $(CXXFLAGS)
+	@mkdir -p "$(BLD)"
+	@$(CXX) $(DASHC) $< $(call dasho,$@) $(CXXFLAGS)
 
 $(BLD)/%$(OBJSFX): $(BLD)/%.cpp
 	@echo " + CXX $<"
-	@$(CXX) $(DASHC) $(CXXOPT) $< $(call dasho,$@) $(CXXFLAGS)
+	@mkdir -p "$(BLD)"
+	@$(CXX) $(DASHC) $< $(call dasho,$@) $(CXXFLAGS)
 
 $(BLD)/%.i: %.c
 	@echo " + CC $(DASHE) $<"
+	@mkdir -p "$(BLD)"
 	@$(CC) $(DASHC) $< $(call dasho,$@) $(CFLAGS) $(DASHE)
 
 $(BLD)/%.ipp: %.cpp
 	@echo " + CXX $(DASHE) $<"
+	@mkdir -p "$(BLD)"
 	@$(CXX) $(DASHC) $< $(call dasho,$@) $(CXXFLAGS) $(DASHE)
 
 $(BLD)/%.h.cpp: $(BLD)/%.i.h
 	@echo " + MOC $<"
+	@mkdir -p "$(BLD)"
 	@$(MOC) $< -o $@ $(xCXXFLAGS)
 
 $(BLD)/%.i.h: %.h
 	@echo " + SED $<"
+	@mkdir -p "$(BLD)"
 	@cat "$<" | sed "s/QPROPERTY( *\([^ ,][^,]*[^ ,][^ ,]*\) *, *\([^ ,][^,]*[^ ,][^ ,]*\) *, *\([^ ,][^,]*[^ ,][^ ,]*\) *, *\([^ ,][^,]*[^ ,][^ ,]*\) *)/public slots: void set\4(\2 __value__) { emit \3AboutToChange(m\4); m\4 = __value__; emit \3Changed(m\4); } public: \1 \3() const { return m\4; } \1 \*\3Ref() { return \&(m\4); } private: \1 m\4; signals: void \3Changed(\2 __value__); void \3AboutToChange(\2 __value__);/g" \
 		> "$@"
 
@@ -64,3 +67,18 @@ rulesinfo:
 	@echo "ARCH      = $(ARCH)"
 	@echo "BLD       = $(BLD)"
 	@echo "QT4LIB    = $(QT4LIB)"
+
+clean: objclean execlean libclean arclean $(LOCALCLEAN)
+	$(call rmdir,$(BLD))
+
+objclean: $(LOCALOBJCLEAN)
+	$(RM) $(COBJECTS) $(CXXOBJECTS)
+
+execlean: $(LOCALEXECLEAN)
+	$(RM) $(PROGRAM)
+
+libclean: $(LOCALLIBCLEAN)
+	$(RM) $(LIBRARY)
+
+arclean: $(LOCALARCLEAN)
+	$(RM) $(ARCHIVE)
