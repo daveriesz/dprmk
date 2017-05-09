@@ -1,0 +1,52 @@
+
+OBJSFX = .obj
+EXESFX = .exe
+PFMDEF = WINDOWS
+
+CC     = cl.exe
+CXX    = cl.exe
+MOC    = moc.exe
+
+DASHC  = /c
+DASHG  = $(RELEASECLOPT)
+DASHD  = /D
+DASHE  = 
+DASHM  = 
+
+DASH32 =
+DASH64 = 
+
+dasho  = /Fo$(1) /Fe$(1)
+dashi  = /I$(1)
+
+CPFMDEFS  = /DWINNT /DWIN32 /DWINDOWS /nologo /Dstrcasecmp=stricmp /D_STATIC_CPPLIB
+LDPFMLIBS = user32.lib shell32.lib advapi32.lib netapi32.lib gdi32.lib
+LDPFMDIRS = 
+LDPFMOPTS = /nologo /link #/DEBUG #/NODEFAULTLIB:libcmt
+LDPFMCXXLIBS = 
+
+COMPILERSTRING := $(shell $(CC) 2>&1 | grep Version)
+ARCH           := $(filter x64 X64 x86 X86 ARM arm ARM64 arm64,$(COMPILERSTRING))
+
+RELEASECLOPT = /nologo /MT
+DEBUGCLOPT   = /nologo /MT /Z7
+
+archive = $(BLD)/$(1).lib
+linkdir = /link /libpath:$(1)
+linklib = $(1).lib
+incldir = /I$(1)
+
+mkarchive = lib /nologo /OUT:$(call archive,$(1))
+mkexe = $(CC) /nologo $(2) /link $(3) /OUT:$(1) 
+
+MATHLIB   = 
+CLOCKLIB  = 
+SSLLIB    = libeay64.lib ssleay64.lib
+SSLLIBDIR = C:/ArcGIS/SharedArcGIS/DepFilesWin64/Lib/OpenSSL
+SSLINCDIR = C:/ArcGIS/SharedArcGIS/DepFiles/Include 
+
+QT4HOME   = L:/qt/win64/4.8.6
+QT4INC    = $(QT4HOME)/include
+QT4LIB    = $(QT4HOME)/lib
+QTCORE    = QtCore4
+QTGUI     = QtGUI4

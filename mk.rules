@@ -1,0 +1,65 @@
+
+$(BLD):
+	@mkdir -p "$(BLD)"
+
+$(BLD)/%$(OBJSFX): %.c
+	@echo " + CC $<"
+	@$(CC) $(DASHC) $(COPT) $< $(call dasho,$@) $(CFLAGS)
+
+$(BLD)/%$(OBJSFX): %.cpp
+	@echo " + CXX $<"
+	@$(CXX) $(DASHC) $(CXXOPT) $< $(call dasho,$@) $(CXXFLAGS)
+
+$(BLD)/%$(OBJSFX): $(BLD)/%.cpp
+	@echo " + CXX $<"
+	@$(CXX) $(DASHC) $(CXXOPT) $< $(call dasho,$@) $(CXXFLAGS)
+
+$(BLD)/%.i: %.c
+	@echo " + CC $(DASHE) $<"
+	@$(CC) $(DASHC) $< $(call dasho,$@) $(CFLAGS) $(DASHE)
+
+$(BLD)/%.ipp: %.cpp
+	@echo " + CXX $(DASHE) $<"
+	@$(CXX) $(DASHC) $< $(call dasho,$@) $(CXXFLAGS) $(DASHE)
+
+$(BLD)/%.h.cpp: $(BLD)/%.i.h
+	@echo " + MOC $<"
+	@$(MOC) $< -o $@ $(xCXXFLAGS)
+
+$(BLD)/%.i.h: %.h
+	@echo " + SED $<"
+	@cat "$<" | sed "s/QPROPERTY( *\([^ ,][^,]*[^ ,][^ ,]*\) *, *\([^ ,][^,]*[^ ,][^ ,]*\) *, *\([^ ,][^,]*[^ ,][^ ,]*\) *, *\([^ ,][^,]*[^ ,][^ ,]*\) *)/public slots: void set\4(\2 __value__) { emit \3AboutToChange(m\4); m\4 = __value__; emit \3Changed(m\4); } public: \1 \3() const { return m\4; } \1 \*\3Ref() { return \&(m\4); } private: \1 m\4; signals: void \3Changed(\2 __value__); void \3AboutToChange(\2 __value__);/g" \
+		> "$@"
+
+rj: clean j
+
+j:
+	@$(MAKE) -j --no-print-directory
+
+dep:
+	@$(RM) "$(DEPFILE)"
+	@touch "$(DEPFILE)"
+	@$(MAKE) --no-print-directory $(CXXDEPENDS) $(CDEPENDS)
+
+%.cpp.dep: %.cpp
+	@echo " + DEP $<"
+	@$(CXX) $(DASHM) $< $(CXXFLAGS) >> "$(DEPFILE)"
+
+%.c.dep: %.c
+	@echo " + DEP $<"
+	@$(CC) $(DASHM) $< $(CFLAGS) >> "$(DEPFILE)"
+
+depclean:
+	$(RM) $(DEPFILE)
+
+-include $(DEPFILE)
+
+rulesinfo:
+	@echo path info: $(CURDIR)/$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
+	@echo "CURDIR    = $(CURDIR)"
+	@echo "MKCOMMON  = $(MKCOMMON)"
+	@echo "LICDEV    = $(LICDEV)"
+	@echo "UTCOMMON  = $(UTCOMMON)"
+	@echo "ARCH      = $(ARCH)"
+	@echo "BLD       = $(BLD)"
+	@echo "QT4LIB    = $(QT4LIB)"

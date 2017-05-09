@@ -1,0 +1,54 @@
+
+OBJSFX = .o
+EXESFX = 
+PFMDEF = LINUX
+
+CC     = gcc
+CXX    = g++
+MOC    = moc
+
+DASHC  = -c
+DASHG  = -g
+DASHD  = -D
+DASHE  = -E
+DASHM  = -MM
+
+DASH32 = -m32
+DASH64 = -m64
+
+dasho  = -o $(1)
+dashi  = -I$(1)
+
+CPFMDEFS  = -DLINUX
+LDPFMLIBS = 
+LDPFMDIRS = 
+LDPFMOPTS = 
+LDPFMCXXLIBS = -lstdc++
+
+COMPILERSTRING := $(shell $(CC) $(DASHARCH) -dM -E - </dev/null | egrep "^\#define __(x86_64|i[3456]86) +1$$" | head -1 | sed "s/^.*x86_64.*$$/x64/;;s/^.*i[3456]86.*$$/x32/")
+ARCH           := $(COMPILERSTRING)
+
+
+
+
+archive = $(BLD)/lib$(1).a
+linkdir = -L$(1)
+linklib = -l$(1)
+incldir = -I$(1)
+
+mkarchive = ar rcs -o $(call archive,$(1))
+mkexe = $(CC) -o $(1) $(2) $(3)
+
+MATHLIB   = -lm
+CLOCKLIB  = -lrt
+SSLLIB    = -lssl -lcrypto
+SSLLIBDIR = /usr/include
+SSLINCDIR = /usr/lib
+
+QT4HOME   = 
+QT4INC    = /usr/include/qt4
+QT4LIB    = /usr/lib
+QTCORE    = QtCore
+QTGUI     = QtGui
+
+DEPFILE   = .depend
