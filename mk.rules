@@ -3,6 +3,7 @@ $(BLD):
 	@mkdir -p "$(BLD)"
 
 $(BLD)/%$(OBJSFX): %.c
+	@$(MAKE) $(BLD)
 	@echo " + CC $<"
 	@$(CC) $(DASHC) $(COPT) $< $(call dasho,$@) $(CFLAGS)
 
