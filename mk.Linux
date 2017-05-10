@@ -48,11 +48,11 @@ SSLLIB    = -lssl -lcrypto
 SSLLIBDIR = /usr/include
 SSLINCDIR = /usr/lib
 
-QT4HOME   = 
-QT4INC    = /usr/include/qt4
-QT4LIB    = /usr/lib
-QTCORE    = QtCore
-QTGUI     = QtGui
+QT4HOME     = 
+QT4CXXFLAGS = $(shell pkg-config QtCore --cflags)
+QT4LDFLAGS  = $(shell pkg-config QtCore --libs)
+QTCORE      = QtCore
+QTGUI       = QtGui
 
 DEPFILE   = .depend
 

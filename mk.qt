@@ -1,0 +1,4 @@
+
+MOCSOURCES = $(MOCHEADERS:%.h=$(BLD)/%.h.cpp)
+MPPHEADERS = $(MOCHEADERS:%.h=$(BLD)/%.i.h)
+
